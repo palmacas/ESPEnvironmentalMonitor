@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>ESP Monitor Ambiental</title>
+    <link href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <style>
+        html {font-family: 'Roboto', sans-serif; display: inline-block; text-align: center; background-color:#E5E5E5;}
+        p {font-size: 1.2rem;}
+        a {color: black; text-decoration: none;}
+        body {color: black; margin: 0}
+        .topnav {overflow: hidden; background-color: #00286b; color: #f5f5f5; font-size: 1.7rem;}
+        .content {padding: 10px;}
+        .cards {max-width: 700px; margin: 0 auto; display: grid; grid-gap: 0.5rem; grid-template-columns: repeat(2, minmax(40%, 1fr));}
+        .header {grid-column: 1 /span 2;}
+        .card {box-shadow: 1px 1px 5px 1px rgba(140, 140, 140, .5); border-radius: 5px;}
+        .reading {font-size: 2rem;}
+        .reading-big {font-size: 5rem;}
+        .fas{ color: #00286b;}
+    </style>
+</head>
+<body>
+<div class="topnav">
+    <h4>MONITOR AMBIENTAL</h4>
+</div>
+<div class="content">
+    <div class="cards">
+        <div class="header">
+            <h4><i class="fas fa-map-marker-alt"></i><span id="city"> %CITY%</span>, <span id="country">%COUNTRY%</span></h4>
+            <span class="reading-big"><span id="temp">%TEMPERATURE%</span>&deg;C</span>
+            <h4><i class="fas fa-cloud"></i> <span id="weather">%WEATHER%</span></h4>
+        </div>
+        <div class="card">
+            <h4><i class="fas fa-thermometer-half"></i> SENSACIÓN</h4>
+            <span class="reading"><span id="feels_like">%FEELS_LIKE%</span>&deg;C</span>
+        </div>
+        <div class="card">
+            <h4><i class="fas fa-tachometer-alt"></i> PRESIÓN</h4>
+            <span class="reading"><span id="press">%PRESSURE%</span> hPa</span>
+        </div>
+        <div class="card">
+            <h4><i class="fas fa-tint"></i> HUMEDAD</h4>
+            <span class="reading"><span id="hum">%HUMIDITY%</span>&percnt;</span>
+        </div>
+        <div class="card">
+            <h4><i class="fas fa-wind"></i> VIENTO</h4>
+            <span class="reading"><span id="wind">%WIND%</span> km/h</span>
+        </div>
+        <div class="header">
+            <h4>LECTURAS LOCALES</h4>
+        </div>
+        <div class="card">
+            <h4><i class="fas fa-thermometer-half"></i> TEMPERATURA</h4>
+            <span class="reading"><span id="l_temp">%L_TEMPERATURE%</span>&deg;C</span>
+        </div>
+        <div class="card">
+            <h4><i class="fas fa-tachometer-alt"></i> PRESIÓN</h4>
+            <span class="reading"><span id="l_press">%L_PRESSURE%</span> hPa</span>
+        </div>
+        <div class="card">
+            <h4><i class="fas fa-tint"></i> HUMEDAD</h4>
+            <span class="reading"><span id="l_hum">%L_HUMIDITY%</span>&percnt;</span>
+        </div>
+        <div class="card">
+            <h4><i class="fas fa-mountain"></i> ALTITUD</h4>
+            <span class="reading"><span id="l_alt">%L_ALTITUDE%</span> m</span>
+        </div>
+    </div>
+</div>
+<p>v1.0<br>
+    <a href="https://palmacas.com/" target="_blank">palmacas</a> 2020<br></p>
+<script>
+    if (!!window.EventSource) {
+    var source = new EventSource('/events');
+    source.addEventListener('open', function(e) {console.log("Events Connected"); }, false);
+    source.addEventListener('error', function(e) {if (e.target.readyState != EventSource.OPEN) {console.log("Events Disconnected"); } }, false);
+    source.addEventListener('message', function(e) {console.log("message", e.data); }, false);
+    source.addEventListener('temperature', function(e) {console.log("temperature", e.data); document.getElementById("temp").innerHTML = e.data; }, false);
+    source.addEventListener('weather', function(e) {console.log("weather", e.data); document.getElementById("weather").innerHTML = e.data; }, false);
+    source.addEventListener('feels_like', function(e) {console.log("feels_like", e.data); document.getElementById("feels_like").innerHTML = e.data; }, false);
+    source.addEventListener('pressure', function(e) {console.log("pressure", e.data); document.getElementById("press").innerHTML = e.data; }, false);
+    source.addEventListener('humidity', function(e) {console.log("humidity", e.data); document.getElementById("hum").innerHTML = e.data; }, false);
+    source.addEventListener('wind', function(e) {console.log("wind", e.data); document.getElementById("wind").innerHTML = e.data; }, false);
+    }
+    if (!!window.EventSource) {
+    var source = new EventSource('/local_events');
+    source.addEventListener('open', function(e) {console.log("Events Connected"); }, false);
+    source.addEventListener('error', function(e) {if (e.target.readyState != EventSource.OPEN) {console.log("Events Disconnected"); } }, false);
+    source.addEventListener('message', function(e) {console.log("message", e.data); }, false);
+    source.addEventListener('l_temperature', function(e) {console.log("l_temperature", e.data); document.getElementById("l_temp").innerHTML = e.data; }, false);
+    source.addEventListener('l_pressure', function(e) {console.log("l_pressure", e.data); document.getElementById("l_press").innerHTML = e.data; }, false);
+    source.addEventListener('l_humidity', function(e) {console.log("l_humidity", e.data); document.getElementById("l_hum").innerHTML = e.data; }, false);
+    source.addEventListener('l_altitude', function(e) {console.log("l_altitude", e.data); document.getElementById("l_alt").innerHTML = e.data; }, false);
+    }
+</script>
+</body>
+</html>
